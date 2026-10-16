@@ -2,21 +2,39 @@
 
 Site pessoal para acompanhar a dieta e as medidas corporais.
 
+## Abas
+
+- **Cardápio**: os 7 dias da semana, abrindo no dia de hoje. Seg/Qua/Sex usam o plano
+  Low Carb (1200 kcal) e Ter/Qui/Sáb/Dom o High Carb (1400 kcal). Cada refeição mostra a
+  opção principal e as substituições; a refeição do horário atual fica destacada.
+- **Corpo**: registro semanal de peso e medidas (cintura, abdômen, quadril, busto, braço,
+  coxa, panturrilha), com gráfico de evolução e histórico editável.
+- **Supermercado**: lista de compras calculada a partir das opções escolhidas no Cardápio,
+  para a semana ou o mês, com o valor estimado do carrinho.
+
 ## Estrutura
 
 ```
 Dieta-Shay/
-├── index.html      # página principal
-├── css/style.css   # estilos
-├── js/app.js       # lógica do site
-└── assets/         # ícones e imagens
+├── index.html          # página e abas
+├── css/style.css       # estilos (tema claro e escuro)
+├── js/dados-dieta.js   # plano alimentar e catálogo de ingredientes/preços
+├── js/app.js           # lógica do site
+└── assets/
 ```
 
 ## Como abrir
 
-Basta abrir o `index.html` no navegador.
+Basta abrir o `index.html` no navegador. O gráfico usa o Chart.js pela internet.
+
+## Preços
+
+Os itens da cesta básica (carne, leite, feijão, arroz, banana, tomate, pão francês, café)
+usam o preço médio de Fortaleza da Pesquisa Nacional da Cesta Básica do DIEESE (set/2026).
+Os demais são estimativas e podem ser editados direto no site. Para mudar os valores
+padrão, edite `js/dados-dieta.js`.
 
 ## Privacidade
 
-Os dados (refeições, peso, medidas) ficam salvos apenas no navegador e
-não são enviados para o repositório.
+Medidas, escolhas e preços editados ficam salvos apenas no navegador (localStorage) e
+não vão para o repositório. Use "Fazer backup" no rodapé para guardar uma cópia.
