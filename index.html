@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2f7d5b">
   <title>Dieta Shay</title>
+  <script>
+    // Aplica o tema salvo antes de desenhar a página, para não piscar a cor errada
+    try {
+      var tema = JSON.parse(localStorage.getItem('dietaShay.tema'));
+      if (tema === 'claro') document.documentElement.dataset.theme = 'light';
+      if (tema === 'escuro') document.documentElement.dataset.theme = 'dark';
+    } catch (e) {}
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -18,10 +26,13 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Zm0 0 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>Dieta Shay</span>
         </div>
-        <button class="btn btn-config" data-ir="planejar" title="Configurar as escolhas da semana">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-          <span>Planejar semana</span>
-        </button>
+        <div class="topo-botoes">
+          <button class="btn btn-config btn-tema" id="botao-tema"></button>
+          <button class="btn btn-config" data-ir="planejar" title="Configurar as escolhas da semana">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Planejar semana</span>
+          </button>
+        </div>
       </div>
       <nav class="abas" role="tablist" aria-label="Seções">
         <button role="tab" data-aba="dias" aria-selected="true">Cardápio</button>

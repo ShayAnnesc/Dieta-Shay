@@ -20,23 +20,46 @@
   color-scheme: light;
 }
 
+/* Modo escuro em lilás. Vale quando o tema é "escuro" ou quando é "automático" e o
+   aparelho está no escuro (o mesmo bloco aparece duas vezes por causa do @media). */
+:root[data-theme="dark"] {
+  --bg: #121218;
+  --cartao: #1c1b24;
+  --texto: #ecebf3;
+  --suave: #a4a2b5;
+  --borda: #2e2c3a;
+  --primaria: #b4a5ff;
+  --primaria-texto: #18142f;
+  --primaria-suave: #2b2549;
+  --acento: #f0a35b;
+  --acento-suave: #3a2a1a;
+  --low: #7aa7ea;
+  --low-suave: #1c2a3e;
+  --high: #f0a35b;
+  --high-suave: #3a2a1a;
+  --bom: #b4a5ff;
+  --ruim: #ef8a76;
+  --sombra: none;
+  color-scheme: dark;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111513;
-    --cartao: #1a1f1c;
-    --texto: #e7ebe8;
-    --suave: #9ba7a0;
-    --borda: #2a312d;
-    --primaria: #5cbf90;
-    --primaria-texto: #0d1a14;
-    --primaria-suave: #1d3529;
+    --bg: #121218;
+    --cartao: #1c1b24;
+    --texto: #ecebf3;
+    --suave: #a4a2b5;
+    --borda: #2e2c3a;
+    --primaria: #b4a5ff;
+    --primaria-texto: #18142f;
+    --primaria-suave: #2b2549;
     --acento: #f0a35b;
     --acento-suave: #3a2a1a;
     --low: #7aa7ea;
     --low-suave: #1c2a3e;
     --high: #f0a35b;
     --high-suave: #3a2a1a;
-    --bom: #5cbf90;
+    --bom: #b4a5ff;
     --ruim: #ef8a76;
     --sombra: none;
     color-scheme: dark;
@@ -97,6 +120,12 @@ h2 { font-size: 1.1rem; margin: 0 0 12px; }
 }
 
 .btn-config svg { width: 18px; height: 18px; }
+
+.topo-botoes { display: flex; gap: 8px; }
+
+.marca, .btn-config { white-space: nowrap; }
+
+.btn-tema svg { width: 18px; height: 18px; }
 
 /* ---------- Painel de configuração ---------- */
 .painel {
@@ -656,6 +685,7 @@ main {
 
 @media (max-width: 520px) {
   .abas button { font-size: .85rem; padding: 10px 2px 12px; }
+  .tema-nome { display: none; }
   .plano-linha { grid-template-columns: 1fr auto; }
   .plano-dia { grid-auto-flow: column; align-items: center; gap: 6px; }
   .plano-sels { grid-column: 1 / -1; grid-row: 2; }

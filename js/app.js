@@ -50,6 +50,7 @@
 
   const estado = {
     aba: store.get('aba', 'dias'),
+    tema: store.get('tema', 'auto'),
     dia: DIA_JS[new Date().getDay()],
     escolhas: store.get('escolhas', {}),
     medidas: store.get('medidas', []),
@@ -91,6 +92,41 @@
     el.classList.add('visivel');
     clearTimeout(timerAviso);
     timerAviso = setTimeout(() => el.classList.remove('visivel'), 2200);
+  }
+
+  // ---------- Tema ----------
+  const ICONE = (conteudo) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">${conteudo}</svg>`;
+  const TEMAS = {
+    auto: {
+      nome: 'Automático',
+      proximo: 'claro',
+      icone: ICONE('<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/>'),
+    },
+    claro: {
+      nome: 'Claro',
+      proximo: 'escuro',
+      icone: ICONE('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+    },
+    escuro: {
+      nome: 'Escuro',
+      proximo: 'auto',
+      icone: ICONE('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>'),
+    },
+  };
+
+  function aplicarTema() {
+    const t = TEMAS[estado.tema] ? estado.tema : 'auto';
+    const raiz = document.documentElement;
+    if (t === 'claro') raiz.dataset.theme = 'light';
+    else if (t === 'escuro') raiz.dataset.theme = 'dark';
+    else delete raiz.dataset.theme;
+
+    const b = $('#botao-tema');
+    b.innerHTML = `${TEMAS[t].icone}<span class="tema-nome">${TEMAS[t].nome}</span>`;
+    b.title = `Tema: ${TEMAS[t].nome} (toque para trocar)`;
+    b.setAttribute('aria-label', b.title);
+    document.querySelector('meta[name="theme-color"]').content = corVar('--primaria');
+    if (estado.aba === 'corpo') renderCorpo(); // o gráfico lê as cores do tema
   }
 
   // ---------- Abas ----------
@@ -639,6 +675,13 @@
       else mostrarAba(b.dataset.ir);
     });
 
+    $('#botao-tema').addEventListener('click', () => {
+      estado.tema = TEMAS[estado.tema] ? TEMAS[estado.tema].proximo : 'claro';
+      store.set('tema', estado.tema);
+      aplicarTema();
+      aviso(`Tema: ${TEMAS[estado.tema].nome}`);
+    });
+
     $('#fechar-planejar').addEventListener('click', () => $('#painel-planejar').close());
     // Fechando por botão, Esc ou "Concluir", a aba de trás mostra as escolhas novas
     $('#painel-planejar').addEventListener('close', renderAbaAtual);
@@ -766,10 +809,11 @@
     $('#exportar').addEventListener('click', exportar);
     $('#importar').addEventListener('change', (e) => e.target.files[0] && importar(e.target.files[0]));
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => estado.aba === 'corpo' && renderCorpo());
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarTema);
   }
 
   // ---------- Início ----------
+  aplicarTema();
   renderCampos();
   renderCardapio();
   ligarEventos();
