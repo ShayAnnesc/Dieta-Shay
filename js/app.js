@@ -97,6 +97,9 @@
     document.querySelectorAll('.aba').forEach((s) => (s.hidden = s.id !== 'aba-' + aba));
     if (aba === 'mercado') renderMercado();
     if (aba === 'corpo') renderCorpo();
+    if (aba === 'planejar') renderPlanejar();
+    if (aba === 'dias') renderCardapio();
+    window.scrollTo(0, 0);
   }
 
   // ---------- Escolhas das refeições ----------
@@ -150,6 +153,10 @@
 
   function renderCardapio() {
     renderDias();
+    const ehDomingo = new Date().getDay() === 0;
+    $('#lembrete').innerHTML = ehDomingo && store.get('planejadoEm', null) !== hojeISO()
+      ? '<div class="lembrete"><span>Hoje é domingo: hora de planejar a semana.</span><button class="btn btn-primario" data-ir="planejar">Planejar</button></div>'
+      : '';
     const dia = DIAS.find((d) => d.k === estado.dia);
     const tipo = DIAS_PLANO[estado.dia];
     const plano = PLANOS[tipo];
@@ -200,6 +207,110 @@
     }).join('');
   }
 
+  // ---------- Planejar ----------
+  const ORDEM_REFEICOES = PLANOS.low.refeicoes.map((r) => ({ id: r.id, nome: r.nome }));
+
+  function refeicaoDoDia(dia, refId) {
+    return PLANOS[DIAS_PLANO[dia]].refeicoes.find((r) => r.id === refId);
+  }
+
+  // No domingo planeja-se a semana que começa amanhã; nos outros dias, a semana atual.
+  function rotuloSemanaPlanejada() {
+    const ini = new Date();
+    if (ini.getDay() === 0) ini.setDate(ini.getDate() + 1);
+    else ini.setDate(ini.getDate() - ((ini.getDay() + 6) % 7));
+    const fim = new Date(ini);
+    fim.setDate(ini.getDate() + 6);
+    const f = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+    return `Semana de ${f(ini)} a ${f(fim)}`;
+  }
+
+  function selectHtml(dia, refId, campo, opcoes, selecionado, item) {
+    return `<select class="sel" data-dia="${dia}" data-ref="${refId}" data-campo="${campo}"${item ? ` data-item="${item}"` : ''}>
+      ${opcoes.map((texto, i) => `<option value="${i}"${i === selecionado ? ' selected' : ''}>${esc(texto)}</option>`).join('')}
+    </select>`;
+  }
+
+  function cartaoPlanejar(refId, nome) {
+    const linhas = DIAS.map((d) => {
+      const tipo = DIAS_PLANO[d.k];
+      const r = refeicaoDoDia(d.k, refId);
+      const e = escolha(d.k, refId);
+      const op = Math.min(e.op, r.opcoes.length - 1);
+      const opcao = r.opcoes[op];
+
+      const selOp = r.opcoes.length > 1
+        ? selectHtml(d.k, refId, 'op', r.opcoes.map(nomeOpcao), op)
+        : '';
+      const selAlts = opcao.itens
+        .map((alts, i) => (alts.length < 2 ? '' : selectHtml(d.k, refId, 'alt', alts.map((x) => x.t), e.alt[`${op}-${i}`] || 0, `${op}-${i}`)))
+        .join('');
+
+      return `<div class="plano-linha">
+        <div class="plano-dia"><strong>${d.nome.split('-')[0]}</strong><span class="selo selo-${tipo}">${PLANOS[tipo].nome}</span></div>
+        <div class="plano-sels">${selOp}${selAlts || (selOp ? '' : '<span class="sel-fixa">Sem opções para escolher</span>')}</div>
+        <button class="link plano-copiar" data-copiar="${d.k}" data-ref="${refId}">Repetir em todos</button>
+      </div>`;
+    }).join('');
+    return `<article class="cartao plano-cartao" id="plano-${refId}"><h2>${esc(nome)}</h2>${linhas}</article>`;
+  }
+
+  function renderBarraPlano() {
+    const comprar = calcularCarrinho('semana').filter((l) => !l.tenho);
+    const total = comprar.reduce((s, l) => s + l.subtotal, 0);
+    const feito = store.get('planejadoEm', null);
+    $('#barra-plano').innerHTML = `
+      <div class="total">
+        <span class="total-rotulo">Gasto estimado da semana</span>
+        <strong>${reais(total)}</strong>
+        <span class="total-sub">${comprar.length} ${comprar.length === 1 ? 'item' : 'itens'} para comprar${feito ? ` · último planejamento em ${dataBR(feito)}` : ''}</span>
+      </div>
+      <div class="acoes">
+        <button class="btn btn-primario" id="concluir-plano">Concluir e ver lista</button>
+      </div>`;
+  }
+
+  function renderPlanejar() {
+    $('#plano-semana').textContent = rotuloSemanaPlanejada();
+    $('#plano-refeicoes').innerHTML = ORDEM_REFEICOES.map((r) => cartaoPlanejar(r.id, r.nome)).join('');
+    renderBarraPlano();
+  }
+
+  function atualizarCartaoPlano(refId, foco) {
+    const nome = ORDEM_REFEICOES.find((r) => r.id === refId).nome;
+    $(`#plano-${refId}`).outerHTML = cartaoPlanejar(refId, nome);
+    renderBarraPlano();
+    if (foco) {
+      const alvo = document.querySelector(`#plano-${refId} select[data-dia="${foco.dia}"][data-campo="${foco.campo}"]${foco.item ? `[data-item="${foco.item}"]` : ''}`);
+      if (alvo) alvo.focus();
+    }
+  }
+
+  // Copia a escolha de um dia para os outros. Entre planos diferentes (low/high) a mesma
+  // receita é achada pelo objeto da opção; os itens, pelo texto ou pelo ingrediente.
+  function repetirEmTodos(diaOrigem, refId) {
+    const rO = refeicaoDoDia(diaOrigem, refId);
+    const eO = escolha(diaOrigem, refId);
+    const opO = Math.min(eO.op, rO.opcoes.length - 1);
+    const opcaoO = rO.opcoes[opO];
+    const escolhidas = opcaoO.itens.map((alts, i) => alts[eO.alt[`${opO}-${i}`] || 0] || alts[0]);
+    const textos = new Set(escolhidas.map((x) => x.t));
+    const ings = new Set(escolhidas.map((x) => x.ing).filter(Boolean));
+
+    DIAS.forEach((d) => {
+      if (d.k === diaOrigem) return;
+      const r = refeicaoDoDia(d.k, refId);
+      const op = Math.max(0, r.opcoes.indexOf(opcaoO));
+      const alt = {};
+      r.opcoes[op].itens.forEach((alts, i) => {
+        let j = alts.findIndex((x) => textos.has(x.t));
+        if (j < 0) j = alts.findIndex((x) => x.ing && ings.has(x.ing));
+        if (j > 0) alt[`${op}-${i}`] = j;
+      });
+      salvarEscolha(d.k, refId, { op, alt });
+    });
+  }
+
   // ---------- Supermercado ----------
   function precoDe(id) {
     return estado.precos[id] != null ? estado.precos[id] : INGREDIENTES[id].preco;
@@ -221,8 +332,8 @@
     return total;
   }
 
-  function calcularCarrinho() {
-    const fator = estado.periodo === 'mes' ? SEMANAS_POR_MES : 1;
+  function calcularCarrinho(periodo = estado.periodo) {
+    const fator = periodo === 'mes' ? SEMANAS_POR_MES : 1;
     const semana = necessidadeSemanal();
     const linhas = Object.keys(semana).map((id) => {
       const info = INGREDIENTES[id];
@@ -473,7 +584,7 @@
   // ---------- Backup ----------
   function exportar() {
     const dados = {};
-    ['escolhas', 'medidas', 'precos', 'tenho'].forEach((k) => (dados[k] = store.get(k, null)));
+    ['escolhas', 'medidas', 'precos', 'tenho', 'planejadoEm'].forEach((k) => (dados[k] = store.get(k, null)));
     const blob = new Blob([JSON.stringify({ app: 'dieta-shay', versao: 1, dados }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -503,6 +614,38 @@
     document.querySelector('.abas').addEventListener('click', (e) => {
       const b = e.target.closest('[data-aba]');
       if (b) mostrarAba(b.dataset.aba);
+    });
+
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-ir]');
+      if (b) mostrarAba(b.dataset.ir);
+    });
+
+    $('#plano-refeicoes').addEventListener('change', (e) => {
+      const s = e.target.closest('select[data-campo]');
+      if (!s) return;
+      const { dia, ref, campo, item } = s.dataset;
+      const atual = escolha(dia, ref);
+      if (campo === 'op') salvarEscolha(dia, ref, { ...atual, op: Number(s.value) });
+      else salvarEscolha(dia, ref, { ...atual, alt: { ...atual.alt, [item]: Number(s.value) } });
+      // Ao trocar a opção os itens mudam, então o foco volta para o seletor de opção
+      atualizarCartaoPlano(ref, { dia, campo, item: campo === 'alt' ? item : null });
+    });
+
+    $('#plano-refeicoes').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-copiar]');
+      if (!b) return;
+      repetirEmTodos(b.dataset.copiar, b.dataset.ref);
+      atualizarCartaoPlano(b.dataset.ref);
+      aviso('Escolha repetida em todos os dias');
+    });
+
+    $('#barra-plano').addEventListener('click', (e) => {
+      if (!e.target.closest('#concluir-plano')) return;
+      store.set('planejadoEm', hojeISO());
+      estado.periodo = 'semana';
+      mostrarAba('mercado');
+      aviso('Semana planejada!');
     });
 
     $('#lista-dias').addEventListener('click', (e) => {

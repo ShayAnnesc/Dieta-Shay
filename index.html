@@ -19,8 +19,9 @@
       </div>
       <nav class="abas" role="tablist" aria-label="Seções">
         <button role="tab" data-aba="dias" aria-selected="true">Cardápio</button>
-        <button role="tab" data-aba="corpo" aria-selected="false">Corpo</button>
+        <button role="tab" data-aba="planejar" aria-selected="false">Planejar</button>
         <button role="tab" data-aba="mercado" aria-selected="false">Supermercado</button>
+        <button role="tab" data-aba="corpo" aria-selected="false">Corpo</button>
       </nav>
     </div>
   </header>
@@ -28,10 +29,22 @@
   <main>
     <!-- Cardápio -->
     <section id="aba-dias" class="aba" role="tabpanel">
+      <div id="lembrete"></div>
       <div class="dias" id="lista-dias" role="group" aria-label="Dias da semana"></div>
       <div class="dia-cabecalho" id="dia-cabecalho"></div>
       <p class="dica">Toque na opção que você vai comer: a lista do supermercado é calculada com as suas escolhas.</p>
       <div id="refeicoes" class="refeicoes"></div>
+    </section>
+
+    <!-- Planejar -->
+    <section id="aba-planejar" class="aba" role="tabpanel" hidden>
+      <div class="dia-cabecalho">
+        <h1>Planejar a semana</h1>
+        <div class="plano" id="plano-semana"></div>
+      </div>
+      <p class="dica">Escolha o que pretende comer em cada dia. O gasto estimado e a lista do Supermercado são atualizados a cada escolha. Use “Repetir em todos” para copiar a escolha de um dia para a semana inteira.</p>
+      <div id="plano-refeicoes"></div>
+      <div class="barra-plano" id="barra-plano"></div>
     </section>
 
     <!-- Corpo -->

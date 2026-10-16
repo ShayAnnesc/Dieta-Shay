@@ -501,6 +501,72 @@ main {
 .produto.tenho .produto-nome,
 .produto.tenho .produto-subtotal { text-decoration: line-through; color: var(--suave); }
 
+/* ---------- Planejar ---------- */
+.lembrete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--primaria-suave);
+  border: 1px solid var(--primaria);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.plano-cartao h2 { margin-bottom: 4px; }
+
+.plano-linha {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--borda);
+}
+
+.plano-cartao h2 + .plano-linha { border-top: 0; }
+
+.plano-dia { display: grid; gap: 2px; justify-items: start; }
+
+.plano-sels { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+
+.sel {
+  max-width: 100%;
+  min-width: 0;
+  border: 1px solid var(--borda);
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: .85rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+.sel[data-campo="op"] { border-color: var(--primaria); background: var(--primaria-suave); font-weight: 800; }
+
+.sel-fixa { font-size: .85rem; color: var(--suave); padding: 6px 0; }
+
+.plano-copiar { font-size: .8rem; white-space: nowrap; }
+
+.barra-plano {
+  position: sticky;
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--cartao);
+  border: 1px solid var(--primaria);
+  border-radius: var(--raio);
+  box-shadow: 0 8px 24px rgba(20, 30, 25, .14);
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+
 /* ---------- Rodapé e aviso ---------- */
 .rodape {
   max-width: 960px;
@@ -532,6 +598,13 @@ main {
 .aviso.visivel { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (max-width: 520px) {
+  .abas button { font-size: .85rem; padding: 10px 2px 12px; }
+  .plano-linha { grid-template-columns: 1fr auto; }
+  .plano-dia { grid-auto-flow: column; align-items: center; gap: 6px; }
+  .plano-sels { grid-column: 1 / -1; grid-row: 2; }
+  .sel { flex: 1 1 100%; }
+  .barra-plano { flex-wrap: nowrap; padding: 10px 12px; }
+  .barra-plano .btn { padding: 9px 10px; font-size: .85rem; }
   .dia { padding: 7px 0; }
   .dia .dia-nome { font-size: .8rem; }
   .total strong { font-size: 1.35rem; }

@@ -56,6 +56,7 @@
         : [a('Aveia em flocos (1 colher de sopa)', 'aveia', 1)],
     ],
   });
+  const IOGURTE_NATURAL_TORRADA = IOGURTE_NATURAL(true);
 
   const IOGURTE_ZERO_FRUTA = {
     itens: [
@@ -415,7 +416,7 @@
           id: 'colacao',
           hora: '09:00',
           nome: 'Colação',
-          opcoes: [IOGURTE_NATURAL(true), OVERNIGHT_OATS, OMELETE_CAPRESE, PANQUECA_GELEIA, PAO_DE_QUEIJO_FRIGIDEIRA, LANCHE_RAPIDO],
+          opcoes: [IOGURTE_NATURAL_TORRADA, OVERNIGHT_OATS, OMELETE_CAPRESE, PANQUECA_GELEIA, PAO_DE_QUEIJO_FRIGIDEIRA, LANCHE_RAPIDO],
         },
         { id: 'almoco', hora: '12:00', nome: 'Almoço', opcoes: [PRATO('low')] },
         SOBREMESA,
@@ -423,7 +424,7 @@
           id: 'lanche',
           hora: '15:00',
           nome: 'Lanche da tarde',
-          opcoes: [IOGURTE_ZERO_FRUTA, PAO_COM_PASTINHA, IOGURTE_NATURAL(true), PANQUECA_BANANA, PAO_COM_OVO, ACAI, PAO_DE_QUEIJO_FAKE],
+          opcoes: [IOGURTE_ZERO_FRUTA, PAO_COM_PASTINHA, IOGURTE_NATURAL_TORRADA, PANQUECA_BANANA, PAO_COM_OVO, ACAI, PAO_DE_QUEIJO_FAKE],
         },
         { id: 'jantar', hora: '18:00', nome: 'Jantar', opcoes: [PRATO('low'), ...JANTAR_SUBS] },
         CEIA,
@@ -468,7 +469,7 @@
           id: 'lanche',
           hora: '17:00',
           nome: 'Lanche da tarde',
-          opcoes: [PAO_COM_PASTINHA, IOGURTE_NATURAL(true), PANQUECA_BANANA, IOGURTE_ZERO_FRUTA, PAO_COM_OVO, ACAI, PAO_DE_QUEIJO_FAKE],
+          opcoes: [PAO_COM_PASTINHA, IOGURTE_NATURAL_TORRADA, PANQUECA_BANANA, IOGURTE_ZERO_FRUTA, PAO_COM_OVO, ACAI, PAO_DE_QUEIJO_FAKE],
         },
         { id: 'jantar', hora: '18:00', nome: 'Jantar', opcoes: [PRATO('high'), ...JANTAR_SUBS] },
         CEIA,
