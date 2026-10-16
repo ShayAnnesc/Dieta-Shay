@@ -1,0 +1,12 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+
+# Dados pessoais exportados (backups do site)
+*.backup.json
+dados/
