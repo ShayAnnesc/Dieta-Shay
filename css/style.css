@@ -85,6 +85,63 @@ h2 { font-size: 1.1rem; margin: 0 0 12px; }
 
 .marca svg { width: 22px; height: 22px; }
 
+.topo-linha { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+.btn-config {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: .85rem;
+  color: var(--primaria);
+}
+
+.btn-config svg { width: 18px; height: 18px; }
+
+/* ---------- Painel de configuração ---------- */
+.painel {
+  width: 100%;
+  max-width: 960px;
+  height: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: var(--bg);
+  color: var(--texto);
+  overflow-y: auto;
+}
+
+.painel::backdrop { background: rgba(10, 15, 12, .5); }
+
+body:has(.painel[open]) { overflow: hidden; }
+
+.painel-topo {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--cartao);
+  border-bottom: 1px solid var(--borda);
+}
+
+.painel-topo h1 { font-size: 1.25rem; margin: 0; }
+.painel-sub { color: var(--suave); font-size: .88rem; }
+.painel-conteudo { padding: 16px; }
+
+@media (min-width: 700px) {
+  .painel {
+    height: calc(100% - 48px);
+    margin: 24px auto;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+  }
+}
+
 .abas { display: flex; gap: 4px; margin-top: 6px; }
 
 .abas button {

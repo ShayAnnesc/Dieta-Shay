@@ -210,8 +210,8 @@
       ...(carbo === 'high' ? [[a('Feijão cozido, 50% grão/caldo (1 colher de servir)', 'feijao', 1)]] : []),
       [a('Salada crua (folhas à vontade)', 'folhas', 1)],
       [
-        a('Carne bovina grelhada/cozida (1 pedaço médio — 100 g)', 'carne', 100),
         a('Filé de frango (1 pedaço médio — 110 g)', 'frango', 110),
+        a('Carne bovina grelhada/cozida (1 pedaço médio — 100 g)', 'carne', 100),
         a('Filé mignon suíno grelhado (1 pedaço médio — 100 g)', 'suino', 100),
         a('Filé de tilápia grelhado (2 pedaços médios — 100 g)', 'tilapia', 100),
       ],

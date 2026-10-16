@@ -13,13 +13,18 @@
 <body>
   <header class="topo">
     <div class="topo-inner">
-      <div class="marca">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Zm0 0 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Dieta Shay</span>
+      <div class="topo-linha">
+        <div class="marca">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14Zm0 0 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Dieta Shay</span>
+        </div>
+        <button class="btn btn-config" data-ir="planejar" title="Configurar as escolhas da semana">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Planejar semana</span>
+        </button>
       </div>
       <nav class="abas" role="tablist" aria-label="Seções">
         <button role="tab" data-aba="dias" aria-selected="true">Cardápio</button>
-        <button role="tab" data-aba="planejar" aria-selected="false">Planejar</button>
         <button role="tab" data-aba="mercado" aria-selected="false">Supermercado</button>
         <button role="tab" data-aba="corpo" aria-selected="false">Corpo</button>
       </nav>
@@ -34,17 +39,6 @@
       <div class="dia-cabecalho" id="dia-cabecalho"></div>
       <p class="dica">Toque na opção que você vai comer: a lista do supermercado é calculada com as suas escolhas.</p>
       <div id="refeicoes" class="refeicoes"></div>
-    </section>
-
-    <!-- Planejar -->
-    <section id="aba-planejar" class="aba" role="tabpanel" hidden>
-      <div class="dia-cabecalho">
-        <h1>Planejar a semana</h1>
-        <div class="plano" id="plano-semana"></div>
-      </div>
-      <p class="dica">Escolha o que pretende comer em cada dia. O gasto estimado e a lista do Supermercado são atualizados a cada escolha. Use “Repetir em todos” para copiar a escolha de um dia para a semana inteira.</p>
-      <div id="plano-refeicoes"></div>
-      <div class="barra-plano" id="barra-plano"></div>
     </section>
 
     <!-- Corpo -->
@@ -95,6 +89,7 @@
           <span class="total-sub" id="total-sub"></span>
         </div>
         <div class="acoes">
+          <button class="btn" data-ir="planejar">Ajustar escolhas</button>
           <button class="btn" id="copiar-lista">Copiar lista</button>
           <button class="btn" id="limpar-tenho">Desmarcar “já tenho”</button>
         </div>
@@ -114,6 +109,22 @@
     <button class="link" id="exportar">Fazer backup</button>
     <label class="link">Restaurar backup<input type="file" id="importar" accept="application/json" hidden></label>
   </footer>
+
+  <!-- Configuração: planejar a semana -->
+  <dialog class="painel" id="painel-planejar" aria-labelledby="titulo-planejar">
+    <div class="painel-topo">
+      <div>
+        <h1 id="titulo-planejar">Planejar a semana</h1>
+        <div class="painel-sub" id="plano-semana"></div>
+      </div>
+      <button class="btn" id="fechar-planejar">Fechar</button>
+    </div>
+    <div class="painel-conteudo">
+      <p class="dica">Escolha o que pretende comer em cada dia. O gasto estimado e a lista do Supermercado são atualizados a cada escolha. Use “Repetir em todos” para copiar a escolha de um dia para a semana inteira.</p>
+      <div id="plano-refeicoes"></div>
+      <div class="barra-plano" id="barra-plano"></div>
+    </div>
+  </dialog>
 
   <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
 

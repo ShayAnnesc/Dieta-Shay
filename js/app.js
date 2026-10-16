@@ -83,6 +83,10 @@
   let timerAviso;
   function aviso(msg) {
     const el = $('#aviso');
+    // Com o painel aberto, o aviso precisa ficar dentro dele para aparecer por cima
+    const painel = $('#painel-planejar');
+    const destino = painel.open ? painel : document.body;
+    if (el.parentElement !== destino) destino.appendChild(el);
     el.textContent = msg;
     el.classList.add('visivel');
     clearTimeout(timerAviso);
@@ -90,16 +94,28 @@
   }
 
   // ---------- Abas ----------
+  const ABAS = ['dias', 'mercado', 'corpo'];
+
+  function renderAbaAtual() {
+    if (estado.aba === 'mercado') renderMercado();
+    if (estado.aba === 'corpo') renderCorpo();
+    if (estado.aba === 'dias') renderCardapio();
+  }
+
   function mostrarAba(aba) {
-    estado.aba = aba;
-    store.set('aba', aba);
-    document.querySelectorAll('.abas button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.aba === aba)));
-    document.querySelectorAll('.aba').forEach((s) => (s.hidden = s.id !== 'aba-' + aba));
-    if (aba === 'mercado') renderMercado();
-    if (aba === 'corpo') renderCorpo();
-    if (aba === 'planejar') renderPlanejar();
-    if (aba === 'dias') renderCardapio();
+    estado.aba = ABAS.includes(aba) ? aba : 'dias';
+    store.set('aba', estado.aba);
+    document.querySelectorAll('.abas button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.aba === estado.aba)));
+    document.querySelectorAll('.aba').forEach((s) => (s.hidden = s.id !== 'aba-' + estado.aba));
+    renderAbaAtual();
     window.scrollTo(0, 0);
+  }
+
+  function abrirPlanejar() {
+    renderPlanejar();
+    const painel = $('#painel-planejar');
+    painel.showModal();
+    painel.scrollTop = 0;
   }
 
   // ---------- Escolhas das refeições ----------
@@ -618,8 +634,14 @@
 
     document.addEventListener('click', (e) => {
       const b = e.target.closest('[data-ir]');
-      if (b) mostrarAba(b.dataset.ir);
+      if (!b) return;
+      if (b.dataset.ir === 'planejar') abrirPlanejar();
+      else mostrarAba(b.dataset.ir);
     });
+
+    $('#fechar-planejar').addEventListener('click', () => $('#painel-planejar').close());
+    // Fechando por botão, Esc ou "Concluir", a aba de trás mostra as escolhas novas
+    $('#painel-planejar').addEventListener('close', renderAbaAtual);
 
     $('#plano-refeicoes').addEventListener('change', (e) => {
       const s = e.target.closest('select[data-campo]');
@@ -644,6 +666,7 @@
       if (!e.target.closest('#concluir-plano')) return;
       store.set('planejadoEm', hojeISO());
       estado.periodo = 'semana';
+      $('#painel-planejar').close();
       mostrarAba('mercado');
       aviso('Semana planejada!');
     });
